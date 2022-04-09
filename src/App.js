@@ -1,22 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import fetchData from "./services/rando_user";
+import { useState, useEffect } from "react";
+import UserSummary from "./components/UserSummary";
 
 function App() {
+  const [user, setUser] = useState([]);
+
+  const refreshUser = async (event) => {
+    const data = await fetchData();
+    console.log(data);
+    setUser(data);
+  };
+
+  useEffect(() => {
+    refreshUser();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header>
+        <button className="btn" onClick={refreshUser}>
+          refresh
+        </button>
+        {user.map((db, index) => {
+          const { name, email, location, picture, cell, dob } = db;
+          return (
+            <UserSummary
+              name={name}
+              email={email}
+              location={location}
+              picture={picture}
+              cell={cell}
+              dob={dob}
+              key={index}
+            />
+          );
+        })}
       </header>
     </div>
   );
